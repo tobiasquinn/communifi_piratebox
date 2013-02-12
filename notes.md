@@ -1,7 +1,9 @@
 #PirateBox Notes
 
 Installed newest openwrt trunk snapshot (11/Feb/2012)
+
 Change LAN interface to be home LAN ip range (static 192.168.0.111)
+
 Wireless doesn't seem to be present (not enabled?)
 
 Alter /etc/fstab so that usb mounted filesystem is type ext4 eg: change lines in /etc/fstab:
@@ -13,6 +15,7 @@ Alter /etc/fstab so that usb mounted filesystem is type ext4 eg: change lines in
 Power off
 
 Copy files from vfat created usb drive. Reformat drive as ext4, place files back on usb, startup...
+
 This now allows a proper user to be added with unix permissions
 
 ## Path setup
@@ -34,9 +37,6 @@ Use to add a non privileged user, also make home dir:
 	mkdir -p /mnt/usb/home/xxx
 	chown xxx /mnt/usb/home/xxx
 
-Need to set home dir in passwd file to something like /mnt/usb/home/xxx
-Set ownership of this directory to user xxx
-
 ###sudo
 
 use visudo to add user xxx to the sudoers file (seems to be crash on sudo with shell)
@@ -48,8 +48,11 @@ now use
 ###python
 
 download setuptools from pypi (the egg file for 2.7)
+
 login as root: sh setuptools-0.6c11-py2.7.egg
+
 adds easy_install, use easy_install to install virtualenv
+
 add a python environment, login as xxx user:
 
 	virtualenv venv
