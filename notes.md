@@ -10,7 +10,7 @@ Alter /etc/fstab so that usb mounted filesystem is type ext4 eg: change lines in
 
 	/dev/sda1       /mnt/usb        vfat    rw,sync,umask=0 0       0
 	to
-	/dev/sda1       /mnt/usb        ext4    rw,sync,umask=0 0       0
+	/dev/sda1       /mnt/usb        ext4    rw,sync 0       0
 	
 Power off
 
