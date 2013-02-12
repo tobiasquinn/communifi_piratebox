@@ -25,6 +25,8 @@ add these two lines to /etc/profile to allow library paths etc.
 	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib 
 	export PATH=$PATH:/mnt/ext/usr/sbin:/mnt/ext/usr/bin
 
+## Development Packages
+
 Install with:
 
 	opkg install <pkg>
