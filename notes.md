@@ -13,8 +13,9 @@ Alter /etc/fstab so that usb mounted filesystem is type ext4 eg: change lines in
 Power off
 
 Copy files from vfat created usb drive. Reformat drive as ext4, place files back on usb, startup...
+This now allows a proper user to be added with unix permissions
 
-##Packages added
+## Path setup
 
 add these two lines to /etc/profile to allow library paths etc.
 	
@@ -27,7 +28,11 @@ Install with:
 
 ###shadow-useradd
 
-Use to add a non privileged user [useradd xxx]
+Use to add a non privileged user, also make home dir:
+
+	useradd xxx
+	mkdir -p /mnt/usb/home/xxx
+	chown xxx /mnt/usb/home/xxx
 
 Need to set home dir in passwd file to something like /mnt/usb/home/xxx
 Set ownership of this directory to user xxx
