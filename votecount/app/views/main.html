@@ -1,14 +1,14 @@
 <div class="mainapp container">
     <h3>VoteCounter</h3>
-    <p>Simple vote counter</p>
-    <p>{{votes}} total votes</p>
-    <p>Your vote is {{yourvote}}</p>
+    <h3>{{votes}} total votes</h3>
+    <h2 ng-hide='yourvote'>You haven't voted</h2>
+    <h3 ng-show='yourvote'>You voted {{yourvote}}</h3>
+    <h2>{{timeleft}} seconds left</h2>
     <div class="span6 center">
-        <h1>{{count.up}}</h1>
-        <button class="btn btn-block btn-large btn-success" ng-click="vote(1)">UP</button>
-        <h1>{{count.neutral}}</h1>
-        <button class="btn btn-block btn-large btn-warning" ng-click="vote(0)">NEUTRAL</button>
-        <h1>{{count.down}}</h1>
-        <button class="btn btn-block btn-large btn-danger" ng-click="vote(-1)">DOWN</button>
+        <div ng-show="timeleft > 0">
+            <button ng-disabled="yourvote == 'UP'" class="btn btn-block btn-large btn-success" ng-click="vote('UP')">UP</button>
+            <button ng-disabled="yourvote == 'NEUTRAL'" class="btn btn-block btn-large btn-warning" ng-click="vote('NEUTRAL')">NEUTRAL</button>
+            <button ng-disabled="yourvote == 'DOWN'" class="btn btn-block btn-large btn-danger" ng-click="vote('DOWN')">DOWN</button>
+        </div>
     </div>
 </div>

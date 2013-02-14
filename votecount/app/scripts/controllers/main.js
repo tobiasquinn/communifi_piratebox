@@ -1,31 +1,21 @@
 'use strict';
 
-votecountApp.controller('MainCtrl', function($scope) {
-  $scope.yourvote = 'NEUTRAL';
-  $scope.votes = 'UNKNOWN';
-  $scope.count = {
-    'up': 0,
-    'down': 0,
-    'neutral': 0,
-  };
+votecountApp.controller('MainCtrl', function($scope, $timeout) {
+    $scope.yourvote = false;
+    $scope.votes = 'UNKNOWN';
+    $scope.timeleft = 60;
 
-  var lastvote = 'NETURAL';
+    $scope.vote = function(vote) {
+        $scope.yourvote = vote;
+        $scope.count[vote]++;
+    };
 
-  $scope.vote = function(count) {
-      switch(count) {
-          case 1:
-              $scope.count['up']++;
-              lastvote = 'UP';
-              break;
-          case 0:
-              $scope.count['neutral']++;
-              lastvote = 'NEUTRAL';
-              break;
-          case -1:
-              $scope.count['down']++;
-              lastvote = 'DOWN';
-              break;
-      }
-      $scope.yourvote = lastvote;
-  }
+    var interval = 1000;
+    $scope.onTimeout = function() {
+        $scope.timeleft--;
+        if ($scope.timeleft > 0) {
+            mytimeout = $timeout($scope.onTimeout, interval);
+        }
+    }
+    var mytimeout = $timeout($scope.onTimeout, interval);
 });
