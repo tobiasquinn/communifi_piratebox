@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/', defaults={'path': '/index.html'})
+@app.route('/<path:path>')
+def catch_all(path):
+    return send_file('app/%s' % (path))
 
 if __name__ == '__main__':
     app.debug = True

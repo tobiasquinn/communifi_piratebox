@@ -1,1 +1,12 @@
 /* Will be compiled down to a single stylesheet with your sass files */
+.mainapp {
+    text-align: center;
+}
+
+.center {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.centered-content{ text-align:center !important;}
