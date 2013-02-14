@@ -6,17 +6,23 @@ Change LAN interface to be home LAN ip range (static 192.168.0.111)
 
 Wireless doesn't seem to be present (not enabled?)
 
-Alter /etc/fstab so that usb mounted filesystem is type ext4 eg: change lines in /etc/fstab:
+Power off, remove usb drive
 
-	/dev/sda1       /mnt/usb        vfat    rw,sync,umask=0 0       0
-	to
-	/dev/sda1       /mnt/usb        ext4    rw,sync 0       0
-	
-Power off
+Copy files from vfat created usb drive. Reformat drive as vfat partition first, additional ext4 partition, place files from vfat back on usb, startup...
 
-Copy files from vfat created usb drive. Reformat drive as ext4, place files back on usb, startup...
+Setup mount points in piratebox.
 
-This now allows a proper user to be added with unix permissions
+Add these lines to /etc/config/fstab
+
+	config mount
+		option target '/mnt/home'
+		option device '/dev/sda2'
+		option fstype 'ext4'
+		option options 'rw,sync'
+		option enabled '1'
+		option enabled_fsck '1'
+
+Reboot and this now allows a proper user to be added with unix permissions
 
 ## Path setup
 
@@ -36,8 +42,8 @@ Install with:
 Use to add a non privileged user, also make home dir:
 
 	useradd xxx
-	mkdir -p /mnt/usb/home/xxx
-	chown xxx /mnt/usb/home/xxx
+	mkdir -p /mnt/home/xxx
+	chown xxx /mnt/home/xxx
 
 ###sudo
 
