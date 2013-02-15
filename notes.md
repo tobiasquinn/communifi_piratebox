@@ -4,7 +4,13 @@ Installed newest openwrt trunk snapshot (11/Feb/2012)
 
 Change LAN interface to be home LAN ip range (static 192.168.0.111)
 
-Wireless doesn't seem to be present (not enabled?)
+Wireless - needs line in /etc/config/wireless changed:
+
+	option mode 'sta'
+	to:
+	option mode 'ap'
+
+Change ssid, encryption 'psk2' and key here as well if required.
 
 Power off, remove usb drive
 
@@ -30,6 +36,10 @@ add these two lines to /etc/profile to allow library paths etc.
 	
 	export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib 
 	export PATH=$PATH:/mnt/ext/usr/sbin:/mnt/ext/usr/bin
+
+## Upgrading firmware
+
+Use the appropriate -sysupgrade image, the command in follow steps for normal piratebox install, starting from step x. Remeber to setup ip address in /etc/piratebox.common and run /etc/init.d/piratebox setup before rebooting.
 
 ## Development Packages
 
@@ -73,3 +83,11 @@ pip install flask
 ###git
 
 opkg -d piratebox install git
+
+note that git pull doesn't work, use git fetch then git merge
+
+###screen
+
+make sure terminfo is installed without -d piratebox.
+
+Uninstall/reinstall if necessary - opkg files terminfo should have things like /usr/share/terminfo/x/xterm *not* /mnt/ext/usr/share/terminfo/x/xterm

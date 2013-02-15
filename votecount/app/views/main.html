@@ -6,9 +6,9 @@
     <h2>{{timeleft}} seconds left</h2>
     <div class="span6 center">
         <div ng-show="timeleft > 0">
-            <button ng-disabled="yourvote == 'UP'" class="btn btn-block btn-large btn-success" ng-click="vote('UP')">UP</button>
+            <button ng-disabled="yourvote == 'UP'" class="btn btn-block btn-large btn-success" ng-click="vote('UP')">UP <i class="icon-arrow-up"></i></button>
             <button ng-disabled="yourvote == 'NEUTRAL'" class="btn btn-block btn-large btn-warning" ng-click="vote('NEUTRAL')">NEUTRAL</button>
-            <button ng-disabled="yourvote == 'DOWN'" class="btn btn-block btn-large btn-danger" ng-click="vote('DOWN')">DOWN</button>
+            <button ng-disabled="yourvote == 'DOWN'" class="btn btn-block btn-large btn-danger" ng-click="vote('DOWN')">DOWN <i class="icon-arrow-down"></i></button>
         </div>
     </div>
 </div>
