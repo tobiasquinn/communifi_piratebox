@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, send_file, jsonify, request
+from flask import Flask, render_template, send_file, jsonify, request, Response
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin
@@ -8,14 +8,11 @@ app = Flask(__name__)
 
 class VoteNamespace(BaseNamespace, BroadcastMixin):
     _voters = {}
-    _upvotes = 0
-    _neutralvotes = 0
-    _downvotes = 0
+    _voters_votes = {}
 
     def initialize(self):
         print "connection init", id(self)
         self._voters[id(self)] = self
-        self._voteinfo()
 
     def disconnect(self, *args, **kwargs):
         print "disconnect", args, kwargs
@@ -25,26 +22,25 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         self._voteinfo()
 
     def _voteinfo(self):
+        print "VOTER_VOTES", self._voters_votes
+        total_votes = {}
+        # sum the votes
+        for vote in self._voters_votes.values():
+            try:
+                total_votes[vote] += 1
+            except KeyError:
+                total_votes[vote] = 1
+        print "TOTAL_VOTES", total_votes
         self.broadcast_event('voteinfo', {
             'voters': len(self._voters),
-            'votes': {
-                'UP':       self._upvotes,
-                'NEUTRAL':  self._neutralvotes,
-                'DOWN':     self._downvotes
-            }
+            'votes': total_votes
         })
 
     def on_connect(self, data):
         self._voteinfo()
 
     def on_vote(self, data):
-        print "on_vote", data, self._voters
-        if data == 'UP':
-            self._upvotes += 1
-        elif data == 'NEUTRAL':
-            self._neutralvotes += 1
-        elif data == 'DOWN':
-            self._downvotes += 1
+        self._voters_votes[id(self)] = data
         self._voteinfo()
 
 @app.route('/', defaults={'path': '/index.html'})
@@ -60,6 +56,7 @@ def votingtime():
 @app.route('/socket.io/<path:path>')
 def run_socketio(path):
     socketio_manage(request.environ, {'/vote': VoteNamespace})
+    return Response()
 
 if __name__ == '__main__':
     app.debug = True
