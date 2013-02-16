@@ -46,7 +46,9 @@ votecountApp.controller('MainCtrl', function($scope, $timeout, $http, socket) {
         console.log(data['votes']);
         // write our vote information in the scope
         for (var i=0; i < $scope.candidates.length; i++) {
-            var votecount = data['votes'][$scope.candidates[i].name]; // FIXME: key failure...
+            var votecount = data['votes'][$scope.candidates[i].name];
+            // we may not get the full list, assume votecount is 0
+            votecount = (votecount == undefined ? 0 : votecount);
             $scope.candidates[i].votes = votecount;
         }
     });

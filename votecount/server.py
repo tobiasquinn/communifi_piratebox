@@ -25,7 +25,6 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         self._voteinfo()
 
     def _voteinfo(self):
-        print "VOTER_VOTES", self._voters_votes
         total_votes = {}
         # sum the votes
         for vote in self._voters_votes.values():
@@ -33,7 +32,6 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
                 total_votes[vote] += 1
             except KeyError:
                 total_votes[vote] = 1
-        print "TOTAL_VOTES", total_votes
         self.broadcast_event('voteinfo', {
             'voters': len(self._voters),
             'votes': total_votes
