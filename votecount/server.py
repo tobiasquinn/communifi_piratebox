@@ -9,10 +9,14 @@ app = Flask(__name__)
 class VoteNamespace(BaseNamespace, BroadcastMixin):
     _voters = {}
     _voters_votes = {}
+    _candidates = []
 
     def initialize(self):
+        # pass the candidates in using the request object
         print "connection init", id(self)
         self._voters[id(self)] = self
+        self._candidates = self.request
+        print self.request
 
     def disconnect(self, *args, **kwargs):
         print "disconnect", args, kwargs
@@ -37,7 +41,8 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         })
 
     def on_connect(self, data):
-        self._voteinfo()
+        # send the candidate information
+        self.emit('candidates', self._candidates)
 
     def on_vote(self, data):
         self._voters_votes[id(self)] = data
@@ -55,7 +60,8 @@ def votingtime():
 
 @app.route('/socket.io/<path:path>')
 def run_socketio(path):
-    socketio_manage(request.environ, {'/vote': VoteNamespace})
+    payload = ["UP", "NEUTRAL", "DOWN"]
+    socketio_manage(request.environ, {'/vote': VoteNamespace}, request=payload)
     return Response()
 
 if __name__ == '__main__':
@@ -63,5 +69,5 @@ if __name__ == '__main__':
     print app.url_map
     from socketio.server import SocketIOServer
     SocketIOServer(('0.0.0.0', 6001), app,
-            namespace="socket.io", policy_server=False).serve_forever()
+            resource="socket.io", policy_server=False).serve_forever()
     #app.run(host='0.0.0.0', port=6001)
