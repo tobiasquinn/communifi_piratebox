@@ -8,8 +8,10 @@
         <div ng-show="timeleft > 0">
             <div ng-repeat='candidate in candidates' class="row">
                 <div class="span4">
-                    <button ng-disabled="yourvote == '{{candidate.name}}'"
-                        class="btn btn-block btn-large {{candidate.btn}}"
+                    <button
+                        ng-class="candidate.btn"
+                        ng-disabled="yourvote == candidate.name"
+                        class="btn btn-block btn-large"
                         ng-click="vote(candidate.name)">{{candidate.name}}</button>
                 </div>
                 <div class="span2"><h3>{{candidate.votes}} votes</h3></div>
