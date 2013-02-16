@@ -4,17 +4,24 @@
     <h2 ng-hide='yourvote'>You haven't voted</h2>
     <h3 ng-show='yourvote'>You voted {{yourvote}}</h3>
     <h2>{{timeleft}} seconds left</h2>
-    <div class="span6 center">
+    <div class="span8 center">
         <div ng-show="timeleft > 0">
             <div ng-repeat='candidate in candidates' class="row">
-                <div class="span4">
+                <div class="span5">
                     <button
                         ng-class="candidate.btn"
                         ng-disabled="yourvote == candidate.name"
                         class="btn btn-block btn-large"
                         ng-click="vote(candidate.name)">{{candidate.name}}</button>
                 </div>
-                <div class="span2"><h3>{{candidate.votes}} votes</h3></div>
+                <div class="span3">
+                    <h3><ng-pluralize count="candidate.votes"
+                    when="{
+                        '0':        'No votes',
+                        'one':      '1 vote',
+                        'other':    '{} votes'
+                        }"></ng-pluralize></h3>
+                </div>
             </div>
         </div>
     </div>
