@@ -16,7 +16,6 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         print "connection init", id(self)
         self._voters[id(self)] = self
         self._candidates = self.request
-        print self.request
 
     def disconnect(self, *args, **kwargs):
         print "disconnect", args, kwargs
@@ -42,6 +41,7 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
 
     def on_connect(self, data):
         # send the candidate information
+        print "CONNECT", self._candidates
         self.emit('candidates', self._candidates)
 
     def on_vote(self, data):

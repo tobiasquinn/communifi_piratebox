@@ -1,17 +1,22 @@
 'use strict';
 
 votecountApp.controller('MainCtrl', function($scope, $timeout, $http, socket) {
+    // candidates list is fetched from server
+    $scope.candidates = [];
     // this should be sent from server?
-    $scope.candidates = [
-        { 'name': 'UP',         'btn': 'btn-success' },
-        { 'name': 'NEUTRAL',    'btn': 'btn-warning' },
-        { 'name': 'DOWN',       'btn': 'btn-danger' },
-    ];
-
-    // add vote count to candidates table
-    for (var i=0; i < $scope.candidates.length; i++) {
-        $scope.candidates[i]['votes'] = 0;
-    }
+    socket.on('candidates', function(data) {
+        // some styles to colour our buttons
+        var button_styles = ['btn-success', 'btn-warning', 'btn-danger'];
+        var i = 0;
+        data = _.map(data, function(c) {
+            return {
+                'name': c,
+                'btn': button_styles[i++ % button_styles.length],
+                'votes': 0
+            }
+        });
+        $scope.candidates = data;
+    });
 
     // realtime vote information from server
     $scope.voters = 'UNKNOWN';

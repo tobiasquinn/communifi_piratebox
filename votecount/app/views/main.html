@@ -7,12 +7,12 @@
     <div class="span6 center">
         <div ng-show="timeleft > 0">
             <div ng-repeat='candidate in candidates' class="row">
-                <div class="span5">
+                <div class="span4">
                     <button ng-disabled="yourvote == '{{candidate.name}}'"
                         class="btn btn-block btn-large {{candidate.btn}}"
                         ng-click="vote(candidate.name)">{{candidate.name}}</button>
                 </div>
-                <div class="span1"><h3>{{candidate.votes}}</h3></div>
+                <div class="span2"><h3>{{candidate.votes}} votes</h3></div>
             </div>
         </div>
     </div>
