@@ -1,3 +1,5 @@
+# THIS DOESN'T WORK, FAILS AT CYTHON BUILD STAGE
+
 #Building python gevent and greenlets on PirateBox openwrt
 
 Refs:
