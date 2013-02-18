@@ -68,6 +68,8 @@ votecountApp.controller('MainCtrl', function($scope, $timeout, $http, socket) {
         }
     }
     
-    // nudge server
-    socket.emit('connect');
+    // nudge server on socket connect
+    socket.onopen(function() {
+        socket.emit('connect');
+    });
 });

@@ -76,13 +76,18 @@ add a python environment, login as xxx user:
 	virtualenv venv
 	source venv/bin/activate
 
-###flask
+###tornado
 
-pip install flask
+    pip install tornado
+
+###sockjs-tornado
+
+    pip install sockjs-tornado
 
 ###git
 
-opkg -d piratebox install git
+    opkg -d piratebox install git
+    opkg -d piratebox install diffutils
 
 note that git pull doesn't work, use git fetch then git merge
 
@@ -90,4 +95,6 @@ note that git pull doesn't work, use git fetch then git merge
 
 make sure terminfo is installed without -d piratebox.
 
-Uninstall/reinstall if necessary - opkg files terminfo should have things like /usr/share/terminfo/x/xterm *not* /mnt/ext/usr/share/terminfo/x/xterm
+Uninstall/reinstall if necessary - *'opkg files terminfo'* should have things like /usr/share/terminfo/x/xterm *not* /mnt/ext/usr/share/terminfo/x/xterm
+    
+    opkg -d piratebox install screen
