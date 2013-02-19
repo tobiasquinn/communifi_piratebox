@@ -26,8 +26,13 @@ votecountApp.factory('socket', function($rootScope) {
         },
         emit: function(eventName, data, callback) {
             console.log("EMIT", eventName, data);
-            if (data == undefined) socket.send(eventName);
-            else socket.send(JSON.stringify({eventName: data}));
+            if (data == undefined) {
+                socket.send(eventName);
+            } else {
+                var obj = {};
+                obj[eventName] = data;
+                socket.send(JSON.stringify(obj));
+            }
         }
     };
 });
