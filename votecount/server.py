@@ -14,9 +14,8 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
     def initialize(self):
         # pass the candidates in using the request object
         print "connection init", id(self)
-        self._voters.add(self)
-        #self._candidates = self.request
-        self._candidates = ['YES', 'NO', 'MAYBE']
+        self._voters[id(self)] = self
+        self._candidates = self.request
 
     def disconnect(self, *args, **kwargs):
         print "disconnect", args, kwargs
@@ -24,13 +23,6 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         del self._voters[id(self)]
         super(VoteNamespace, self).disconnect(*args, **kwargs)
         self._voteinfo()
-
-    # simpe message dispatcher calls on_xxx methods for xxx message type
-    def on_message(self, mess):
-        print "ON_MESSAGE", mess
-        method = getattr(self, "on_%s" % (mess))
-        print "METHOD", method
-        method("TESTING")
 
     def _voteinfo(self):
         total_votes = {}
@@ -54,7 +46,6 @@ class VoteNamespace(BaseNamespace, BroadcastMixin):
         self._voters_votes[id(self)] = data
         self._voteinfo()
 
-<<<<<<< Updated upstream
 @app.route('/', defaults={'path': '/index.html'})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -64,11 +55,6 @@ def catch_all(path):
 def votingtime():
     return jsonify(time=-1)
     #return jsonify(time=random.randint(10,50))
-=======
-class IndexHandler(tornado.web.RequestHandler):
-    def get(self):
-        return self.render('app/index.html')
->>>>>>> Stashed changes
 
 @app.route('/socket.io/<path:path>')
 def run_socketio(path):
