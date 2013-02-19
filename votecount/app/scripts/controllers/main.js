@@ -5,6 +5,7 @@ votecountApp.controller('MainCtrl', function($scope, $timeout, $http, socket) {
     $scope.candidates = [];
     // this should be sent from server?
     socket.on('candidates', function(data) {
+        console.log("CANDIDATES", data);
         // some styles to colour our buttons
         var button_styles = ['btn-success', 'btn-warning', 'btn-danger'];
         var i = 0;

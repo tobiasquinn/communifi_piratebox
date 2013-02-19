@@ -3,43 +3,31 @@
 votecountApp.factory('socket', function($rootScope) {
     var socket = new SockJS('/vote');
     var callbacks = {};
-    //socket.onopen = function() {
-    //    console.log("onopen");
-    //};
     socket.onmessage = function(mess) {
-        console.log('onmessage', mess);
-        // message dispatcher
+        // quick and dirty message dispatcher
+        var message_type = Object.keys(mess.data)[0];
+        var message_data = mess.data[message_type];
+        var func = callbacks[message_type];
+        $rootScope.$apply(function() {
+            func.call(socket, message_data);
+        });
     };
     // Public API here
     return {
         onopen: function(callback) {
             socket.onopen = function() {
-                callback.apply();
+                callback.apply(socket);
             };
         },
         on: function(eventName, callback) {
+            // FIXME: only one on message type callback per socket connection
             console.log("add callback", eventName);
             callbacks[eventName] = callback;
-            //socket.onmessage = function() {
-            //    console.log('onmessage')
-            //    var args = arguments;
-            //    //$rootScope.$apply(function() {
-            //    //    callback.apply(socket, args);
-            //    //});
-            //};
         },
         emit: function(eventName, data, callback) {
             console.log("EMIT", eventName, data);
             if (data == undefined) socket.send(eventName);
-            else socket.send(JSON.stringify({eventName: data}));//'TESTing');
-            //socket.send({eventName: data});//, function () {
-            //    var args = arguments;
-            //    $rootScope.$apply(function () {
-            //        if (callback) {
-            //            callback.apply(socket, args);
-            //        }
-            //    });
-            //})
+            else socket.send(JSON.stringify({eventName: data}));
         }
     };
 });

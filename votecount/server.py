@@ -2,6 +2,8 @@
 import tornado.ioloop
 import tornado.web
 from sockjs.tornado import SockJSRouter, SockJSConnection
+import logging
+logging.getLogger().setLevel(logging.DEBUG)
 
 PORT=6001
 SIO_PORT = PORT + 1
@@ -12,17 +14,23 @@ class VoteConnection(SockJSConnection):
     _candidates = []
 
     def on_open(self, request):
-        print request
+        logging.info("VoteConnection::on_open IP is (%s)" % (request.ip))
         # pass the candidates in using the request object
-        print "connection init", id(self)
         self._voters.add(self)
         #self._candidates = self.request
+        self._candidates = ['YES', 'NO', 'MAYBE']
 
     def disconnect(self, *args, **kwargs):
         print "disconnect", args, kwargs
-        print "disc", id(self)
         self._voters.remove(self)
         self._voteinfo()
+
+    # simpe message dispatcher calls on_xxx methods for xxx message type
+    def on_message(self, mess):
+        print "ON_MESSAGE", mess
+        method = getattr(self, "on_%s" % (mess))
+        print "METHOD", method
+        method("TESTING")
 
     def _voteinfo(self):
         total_votes = {}
@@ -46,14 +54,11 @@ class VoteConnection(SockJSConnection):
         self._voters_votes[id(self)] = data
         self._voteinfo()
 
-    def on_message(self, mess):
-        print "ON_MESSAGE", mess
-
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         return self.render('app/index.html')
 
-VoteRouter = SockJSRouter(VoteConnection, '/vote')
+VoteRouter = SockJSRouter(VoteConnection, '/vote', {'candidates': ['YES', 'NEUTRAL', 'NO']})
 #print VoteRouter.urls
 application = tornado.web.Application(VoteRouter.urls +
     [
