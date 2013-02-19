@@ -1,4 +1,4 @@
-#DNS hijacking and User tracking
+#DNS hijacking and DHCP user tracking
 
 Tobias Quinn <tobias@tobiasquinn.com>
 
@@ -11,6 +11,7 @@ It is possible to use a small DNS server on the piratebox (dnsmasq) which adds i
 To tackle this it is possible to place dummy ethernet routes into the pirateboxes routing table which would intercept DNS requests to a known list of communly used and well known external DNS servers eg. 8.8.8.8 or 8.8.8.4 at the IP layer so that users with custom DNS settings can use piratebox apps with no client reconfiguration.
 
 ###Use cases
+
 1) Bob connects to the piratebox and is isseued an IP address and DNS settings. Bobs client uses the DNS settings from the piratebox.
 
 2) Bob connects to the piratebox with his custom DNS settings (eg. pointing to Googles server). Piratebox issues an IP address and DNS settings. Bobs client ignore the DNS settings. Piratebox intercepts DNS requests using the ethernet routes and Bob is able to access piratebox services using urls like piratebox.lan etc.
