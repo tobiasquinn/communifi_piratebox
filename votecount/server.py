@@ -2,7 +2,7 @@
 import tornado.ioloop
 import tornado.web
 from sockjs.tornado import SockJSRouter, SockJSConnection
-import logging
+import logging, json
 logging.getLogger().setLevel(logging.DEBUG)
 
 PORT=6001
@@ -20,17 +20,21 @@ class VoteConnection(SockJSConnection):
         #self._candidates = self.request
         self._candidates = ['YES', 'NO', 'MAYBE']
 
-    def disconnect(self, *args, **kwargs):
-        print "disconnect", args, kwargs
+    def on_close(self):
+        print "disconnect"
         self._voters.remove(self)
         self._voteinfo()
 
-    # simpe message dispatcher calls on_xxx methods for xxx message type
+    # simple message dispatcher calls on_xxx methods for xxx message type
     def on_message(self, mess):
         print "ON_MESSAGE", mess
-        method = getattr(self, "on_%s" % (mess))
-        print "METHOD", method
-        method("TESTING")
+        method = json.loads(mess)
+        func = getattr(self, "on_%s" % (method['name']))
+        try:
+            data = method['data']
+        except KeyError:
+            data = None
+        func(data)
 
     def _voteinfo(self):
         total_votes = {}
@@ -49,6 +53,7 @@ class VoteConnection(SockJSConnection):
         # send the candidate information
         print "CONNECT", self._candidates
         self.send({'candidates': self._candidates})
+        self._voteinfo()
 
     def on_vote(self, data):
         self._voters_votes[id(self)] = data

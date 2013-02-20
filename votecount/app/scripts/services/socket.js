@@ -21,18 +21,16 @@ votecountApp.factory('socket', function($rootScope) {
         },
         on: function(eventName, callback) {
             // FIXME: only one on message type callback per socket connection
-            console.log("add callback", eventName);
+            console.log("socket.js::on::add callback", eventName);
             callbacks[eventName] = callback;
         },
         emit: function(eventName, data, callback) {
-            console.log("EMIT", eventName, data);
-            if (data == undefined) {
-                socket.send(eventName);
-            } else {
-                var obj = {};
-                obj[eventName] = data;
-                socket.send(JSON.stringify(obj));
-            }
+            console.log("socket.js::emit", eventName, data);
+            var obj = {
+                name: eventName,
+                data: data
+            };
+            socket.send(JSON.stringify(obj));
         }
     };
 });
