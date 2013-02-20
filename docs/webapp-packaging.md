@@ -39,9 +39,8 @@ This could be used to setup a standard server and service that would run on Pira
 
 A standard way of setting up apps to be managed and run by this server would be to have configuration files that point to the appropriate python modules to run with a desired path for the server. Something like this
 
-	[Voting App]
+	[Voting Demo]
 	routes=communifi.webapps.votecount.routes
-	name="Voting Demo"
 	version=1
 	description="A Vote Counting Demonstration Application"
 
