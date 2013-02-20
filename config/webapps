@@ -3,7 +3,7 @@ routes=communifi.webapps.votecount.routes
 version=1
 description=A Vote Counting Demonstration Application
 
-[Chat App]
-routes=communifi.webapps.chat.routes
-version=1
-description=Chat with connected users
+#[Chat App]
+#routes=communifi.webapps.chat.routes
+#version=1
+#description=Chat with connected users
