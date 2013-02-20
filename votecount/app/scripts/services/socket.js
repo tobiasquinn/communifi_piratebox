@@ -1,26 +1,36 @@
 'use strict';
 
 votecountApp.factory('socket', function($rootScope) {
-    var socket = io.connect('/vote');
+    var socket = new SockJS('/vote');
+    var callbacks = {};
+    socket.onmessage = function(mess) {
+        // quick and dirty message dispatcher
+        var message_type = Object.keys(mess.data)[0];
+        var message_data = mess.data[message_type];
+        var func = callbacks[message_type];
+        $rootScope.$apply(function() {
+            func.call(socket, message_data);
+        });
+    };
     // Public API here
     return {
-        on: function(eventName, callback) {
-            socket.on(eventName, function() {
-                var args = arguments;
-                $rootScope.$apply(function() {
-                    callback.apply(socket, args);
-                });
-            });
+        onopen: function(callback) {
+            socket.onopen = function() {
+                callback.apply(socket);
+            };
         },
-        emit: function (eventName, data, callback) {
-            socket.emit(eventName, data, function () {
-                var args = arguments;
-                $rootScope.$apply(function () {
-                    if (callback) {
-                        callback.apply(socket, args);
-                    }
-                });
-            })
+        on: function(eventName, callback) {
+            // FIXME: only one on message type callback per socket connection
+            console.log("socket.js::on::add callback", eventName);
+            callbacks[eventName] = callback;
+        },
+        emit: function(eventName, data, callback) {
+            console.log("socket.js::emit", eventName, data);
+            var obj = {
+                name: eventName,
+                data: data
+            };
+            socket.send(JSON.stringify(obj));
         }
     };
 });

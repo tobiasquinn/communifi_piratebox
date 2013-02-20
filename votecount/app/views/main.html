@@ -1,8 +1,8 @@
 <div class="mainapp container">
     <h3>VoteCounter</h3>
     <h3>{{voters}} connected voters</h3>
-    <h2 ng-hide='yourvote'>You haven't voted</h2>
-    <h3 ng-show='yourvote'>You voted {{yourvote}}</h3>
+    <h2 ng-show='!(yourvote != false)'>You haven't voted</h2>
+    <h3 ng-show='yourvote != false'>You voted {{yourvote}}</h3>
     <h2>{{timeleft}} seconds left</h2>
     <div class="span8 center">
         <div ng-show="timeleft > 0">
