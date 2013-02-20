@@ -2,7 +2,7 @@
 
 Tobias Quinn <tobias@tobiasquinn.com>
 
-This focusses on PirateBoxes that run OpenWRT.
+This focuses on PirateBoxes that run OpenWRT.
 
 ##Aims
 
