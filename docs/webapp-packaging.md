@@ -18,7 +18,8 @@ What is needed for a useful web app.
 
 ####Needed
 * Ability to serve files to clients
-* Persistent storage 
+* Persistent storage
+
 ####Would be nice
 * Realtime server<->client connections
 
