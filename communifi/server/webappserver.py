@@ -26,18 +26,31 @@ class WebAppServer:
         for section in config.sections():
             app = {}
             app['name'] = section
+            app['routes'] = config.get(section, 'routes')
             app['version'] = config.get(section, 'version')
             app['description'] = config.get(section, 'description')
             logging.info("WebAppServer found %s" % (app))
+            self._apps.append(app)
 
     def start(self):
         # FIXME: this should probably do some sort of sanity checking
         # our index page route
-        routes = [(r"/", WebAppIndexHandler),]
+        server_routes = [(r"/", WebAppIndexHandler),]
         # assemble all our routes
-        self._application = tornado.web.Application(routes)
+        for app in self._apps:
+            route = app['routes']
+            print "ROUTE", route
+            # the imported file attaches itself to the route module
+            __import__(route)
+        import routes
+        # ask the routes module for routes it has collected
+        server_routes += routes.routes()
+        # Start the server
+        logging.debug("WebAppServer routes:%s" % (server_routes))
+        self._application = tornado.web.Application(server_routes)
         self._application.listen(self._port)
         logging.info("WebAppServer start on port %d" % (self._port))
+        # Run forever
         tornado.ioloop.IOLoop.instance().start()
 
 #class IndexHandler(tornado.web.RequestHandler):
