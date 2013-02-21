@@ -2,10 +2,7 @@ class __Routes:
     __routes = []
     @classmethod
     def Routes(self, routes):
-        print "HERERERE"
-        print "Routes", routes
         self.__routes += routes
-        print "server.Route", self.__routes
 
     @classmethod
     def getRoutes(self):
