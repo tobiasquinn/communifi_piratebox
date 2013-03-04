@@ -35,17 +35,23 @@ By default, the Piratebox ignores all the DNS setup in /etc, using its own dnsma
 
 1. Edit /opt/piratebox/conf/dnsmasq_default.conf to remove the 'no-resolv' setting:
 
-    # no-resolv
+```
+# no-resolv
+```
 
 (This was the second line in my version.) This tells dnsmasq to use the 8.8.8.8 DNS server we specified above. This file is added to to generate the actual PB config file used - see next step.
 
 2. Edit /opt/piratebox/bin/generate_config_files.sh to only intercept the domain(s) we want to. Change this line:
 
+```
     dns_redirect="/#/$net.$ip_pb"
+```
 
 to
 
+```
     dns_redirect="/piratebox.lan/$net.$ip_pb"
+```
 
 where "piratebox.lan" is the domain you want to use.
 
