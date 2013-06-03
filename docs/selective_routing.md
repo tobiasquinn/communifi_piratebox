@@ -3,77 +3,65 @@ Notes on setting up DNS and DHCP
 
 This document sets out the steps and edits needed to a standard Piratebox install to get it to route traffic through a wired connection _except_ a chosen domain (eg communifi.cb).
 
-Tested on a TP-LINK MR3040.
+Tested on a TP-LINK MR3040 running PB 0.6.3.
 
 ## /etc/config/network
 
-/etc/config/network needs to be setup to create the correct resolv configuration. This may be the default, need to check, but I basically use a single DNS (Google's, situated at 8.8.8.8) for DNS.
+/etc/config/network only needs to be set up to get the piratebox packages, so if you've installed the PB already via http, then nothing needed here.
 
-```
-config interface 'loopback'
-  option ifname 'lo'
-	option proto 'static'
-	option ipaddr '127.0.0.1'
-	option netmask '255.0.0.0'
+1. Add external DNS to PB for use by DHCP clients connecting, by
+adding this to /etc/piratebox.common alongside the "nameserver
+127.0.0.1" line:
 
-config interface 'lan'
-	option ifname 'eth0'
-	option type 'bridge'
-	option proto 'static'
-	option netmask '255.255.255.0'
-	option gateway '192.168.1.254' <- needs updating to router address
-	option ipaddr '192.168.1.1'
-	option dns '8.8.8.8'  <- Use Google for DNS
-```
+  echo "nameserver 192.168.1.254" >> /tmp/resolv.conf
 
-This puts Google's DNS into /etc/resolv.conf when we start the box, which we'll use for clients looking up all domains except the ones we intercept later.
-We could probably set dns to the router address if wanted, or some other accessible server.
+Were 192.168.1.254 is your router IP. Alternatively, use Google's DNS (8.8.8.8) to avoid having to set this if you move the box.
 
-## Piratebox config
+2. Comment out the 'no-resolv' setting in
+/opt/piratebox/conf/dnsmasq_default.conf to allow the box to use other
+DNS servers (specified, I believe, in /etc/config/network as 'dns'
+options):
 
-By default, the Piratebox ignores all the DNS setup in /etc, using its own dnsmasq config to intercept _all_ DNS requests, and re-point them at the box itself. To get out around this, we need to edit the config scripts a bit:
+  # no-resolv 
 
-1. Edit /opt/piratebox/conf/dnsmasq_default.conf to remove the 'no-resolv' setting:
+3. Amend the PB config generation script at
+/opt/piratebox/bin/generate_config_files.sh to only redirect a single
+domain name, changing:
 
-```
-# no-resolv
-```
+  dns_redirect="/#/$net.$ip_pb"
 
-(This was the second line in my version.) This tells dnsmasq to use the 8.8.8.8 DNS server we specified above. This file is added to to generate the actual PB config file used - see next step.
+to:
 
-2. Edit /opt/piratebox/bin/generate_config_files.sh to only intercept the domain(s) we want to. Change this line:
+  dns_redirect="/piratebox.lan/$net.$ip_pb"
 
-```
-    dns_redirect="/#/$net.$ip_pb"
-```
+(Where "piratebox.lan" is the domain you want to use. This doesn't need to be .lan - I use "exmosis.cb")
 
-to
+4. Enable iptables by editing /etc/sysctl.conf and commenting out:
 
-```
-    dns_redirect="/piratebox.lan/$net.$ip_pb"
-```
+  net.bridge.bridge-nf-call-iptables=0
+  
+ie. change it to:
 
-where "piratebox.lan" is the domain you want to use.
+  # net.bridge.bridge-nf-call-iptables=0
 
-(I _think_ we might be able to intercept a TLD here, eg *.cb, by using /cb/, but need to test.)
 
-## IPTables
+5. I found I had to tell iptables to be permissive, as it seemed
+locked down by default. I added this to /etc/firewall.user:
 
-Finally, we need to stop clients from getting their DHCP from upstream (ie from the router the PB is connected to). We can do this using iptables, which is disabled by default.
+  iptables -I zone_wan_ACCEPT -j ACCEPT
 
-Edit /etc/sysctl.conf to enable iptables. Comment out the last line:
+6. Then disallow DHCP traffic through the PB so you don't get DHCP clashes with your router. Add this to
+the /etc/firewall.user script too:
 
-    # net.bridge.bridge-nf-call-iptables=0
+  iptables -I FORWARD -p udp --dport 67:68 --sport 67:68 -j DROP
 
-Then allow all traffic through, via this command (which needs to be added somewhere in the startup scripts, otherwise you'll need to run it on every restart):
 
-    iptables -I zone_wan_ACCEPT -j ACCEPT
 
 ## DNS interception
 
 So far this is all fine if clients are accepting DNS setup via DHCP from the box. If they're overriding DNS by using their own settings, I don't think they see the box properly. With iptables enabled, we should be able to intercept all DNS requests, but not figured this out yet...
 
-Should be _something_ like:
+Should be _something_ like but can't get it to work yet:
 
     iptables -t nat -I PREROUTING -i wlan0 -p udp --dport 53 -j DNAT --to 192.168.1.1
 
