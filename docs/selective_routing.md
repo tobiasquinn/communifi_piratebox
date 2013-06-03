@@ -1,11 +1,9 @@
-Notes on setting up DNS and DHCP
-================================
+# Notes on setting up DNS and DHCP
+
 
 This document sets out the steps and edits needed to a standard Piratebox install to get it to route traffic through a wired connection _except_ a chosen domain (eg communifi.cb).
 
 Tested on a TP-LINK MR3040 running PB 0.6.3.
-
-## /etc/config/network
 
 /etc/config/network only needs to be set up to get the piratebox packages, so if you've installed the PB already via http, then nothing needed here.
 
@@ -22,7 +20,7 @@ Were 192.168.1.254 is your router IP. Alternatively, use Google's DNS (8.8.8.8) 
 DNS servers (specified, I believe, in /etc/config/network as 'dns'
 options):
 
-  # no-resolv 
+ \# no-resolv
 
 3. Amend the PB config generation script at
 /opt/piratebox/bin/generate_config_files.sh to only redirect a single
